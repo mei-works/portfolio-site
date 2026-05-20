@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <!-- スマホ表示に必要なviewport設定 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ▼ タブに表示されるタイトル。自分のブランド名に変える -->
+  <title>lavender._ハンドメイド作家ポートフォリオサイトのサンプル</title>
+
+  <!-- Google Fonts: 上品な雰囲気に合わせたフォントを読み込む -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet" />
+
+  <!-- CSSファイルを読み込む（同じフォルダに style.css を置くこと） -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ==========================================
+       ナビゲーションバー（画面上部に固定）
+  ========================================== -->
+  <nav class="nav" id="nav">
+
+    <!-- ▼ ブランドロゴ：自分のブランド名に変える -->
+    <a href="#top" class="nav-logo">lavender._</a>
+
+    <!-- ナビリンク（PCは横並び・スマホはドロップダウン） -->
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#brand">Brand</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <!-- スマホ用ハンバーガーボタン（script.jsで開閉する） -->
+    <button class="nav-toggle" id="nav-toggle" aria-label="メニューを開く">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </nav>
+
+
+  <!-- ==========================================
+       ヒーロー：トップビュー
+  ========================================== -->
+  <section class="hero" id="top">
+    <div class="hero-content">
+
+      <p class="hero-eyebrow">Handmade Artist Portfolio</p>
+
+      <!-- ▼ メインタイトル：自分のブランド名に変える -->
+      <h1 class="hero-title">lavender._</h1>
+
+      <!-- ▼ キャッチコピー：自分のコピーに変える -->
+      <p class="hero-subtitle">ポートフォリオのサンプル</p>
+
+      <!-- スクロールを促す矢印 -->
+      <a href="#brand" class="hero-scroll">scroll</a>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       ブランド紹介
+  ========================================== -->
+  <section class="brand" id="brand">
+    <div class="container">
+
+      <div class="section-label reveal">
+        <span class="en">Our Story</span>
+        <span class="ja">ブランドについて</span>
+      </div>
+
+      <div class="brand-inner">
+
+        <!-- 左：テキスト -->
+        <div class="brand-text reveal">
+          <!-- ▼ ブランド紹介の見出し -->
+          <h2>ブランド紹介<br>見出し</h2>
+          <!-- ▼ ブランド紹介の本文（2段落） -->
+          <p>
+            ブランド紹介についての説明文を入れることができます。
+          </p>
+          <p>
+            コンセプトなどについての説明
+          </p>
+        </div>
+
+        <!-- 右：装飾カード（絵文字とテキストを自由に変えてOK） -->
+        <div class="brand-visual reveal reveal-delay">
+          <div class="brand-card">
+            <span class="icon">🪡</span>
+            作品カテゴリー１
+          </div>
+          <div class="brand-card">
+            <span class="icon">🌿</span>
+            作品カテゴリー２
+          </div>
+          <div class="brand-card">
+            <span class="icon">🔮</span>
+            作品カテゴリー３
+          </div>
+          <div class="brand-card">
+            <span class="icon">✨</span>
+            作品カテゴリー４
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       作品ギャラリー
+  ========================================== -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+
+      <div class="section-label reveal">
+        <span class="en">Gallery</span>
+        <span class="ja">作品一覧</span>
+      </div>
+
+      <!--
+        ギャラリーグリッド
+        ▼ 実際の写真を使うときは gallery-placeholder の div を削除して
+          <img src="ファイル名.jpg" alt="作品名"> に差し替えてください
+        ▼ 作品を増やすときは gallery-item ブロックをそのままコピペしてください
+      -->
+      <div class="gallery-grid">
+
+        <!-- 作品1 -->
+        <div class="gallery-item reveal">
+          <img src="images/art1.png" alt="Moonstone Ring">
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+        <!-- 作品2（tall = 縦長カード） -->
+        <div class="gallery-item tall reveal reveal-delay">
+          <img src="images/art2.png" alt="Moonstone Ring">
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+        <!-- 作品3 -->
+        <div class="gallery-item reveal reveal-delay-2">
+          <img src="images/art3.png" alt="Moonstone Ring">
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+        <!-- 作品4 -->
+        <div class="gallery-item reveal">
+          <img src="images/art4.png" alt="Moonstone Ring">
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+        <!-- 作品5（tall = 縦長カード） -->
+        <div class="gallery-item tall reveal reveal-delay">
+          <div class="gallery-placeholder c5">
+            <span class="label">作品名</span>
+          </div>
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+        <!-- 作品6 -->
+        <div class="gallery-item reveal reveal-delay-2">
+          <div class="gallery-placeholder c6">
+            <span class="label">作品名</span>
+          </div>
+          <div class="gallery-overlay"><span>View</span></div>
+        </div>
+
+      </div><!-- /.gallery-grid -->
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       プロフィール
+  ========================================== -->
+  <section class="profile" id="profile">
+    <div class="container">
+
+      <div class="section-label reveal">
+        <span class="en">Profile</span>
+        <span class="ja">作家紹介</span>
+      </div>
+
+      <div class="profile-inner">
+
+        <!-- プロフィール画像（円形） -->
+        <div class="profile-avatar reveal">
+          <!--
+            ▼ 実際の写真を使う場合はこの span を削除して
+              <img src="プロフィール写真.jpg" alt="プロフィール写真"
+                   style="width:100%;height:100%;object-fit:cover;">
+              に差し替えてください
+          -->
+          <span class="avatar-text"></span>
+        </div>
+
+        <!-- テキスト部分 -->
+        <div class="reveal reveal-delay">
+          <!-- ▼ 作家名 -->
+          <h2 class="profile-name">lavender(作家名)</h2>
+          <!-- ▼ 肩書き -->
+          <p class="profile-role">Handmade Artist / lavender._</p>
+          <!-- ▼ 自己紹介文（段落を増やしてもOK） -->
+          <p class="profile-bio">
+            作家様についての説明や自己紹介についての文を表示することができます。
+          </p>
+          <p class="profile-bio">
+            作品についてや、作家紹介の補足、追加説明についての具体例です。
+          </p>
+          <!-- ▼ スキルタグ（増減・テキスト変更OK） -->
+          <div class="profile-tags">
+            <span class="profile-tag">作品カテゴリー１</span>
+            <span class="profile-tag">作品カテゴリー２</span>
+            <span class="profile-tag">作品カテゴリー３</span>
+            <span class="profile-tag">作品カテゴリー４</span>
+            <span class="profile-tag">作品カテゴリー５</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       Instagramリンク
+  ========================================== -->
+  <section class="instagram" id="instagram">
+    <div class="container">
+
+      <div class="section-label reveal">
+        <span class="en">Instagram</span>
+        <span class="ja">インスタグラム</span>
+      </div>
+
+      <!-- ▼ 説明文 -->
+      <p class="reveal">
+        制作の様子や新作情報はInstagramで発信中です。<br>
+        フォローしていただけると嬉しいです。（SNSアカウント等の説明文についての具体例です。）
+      </p>
+
+      <!--
+        ▼ href="..." をあなたのInstagramのURLに変える
+          例: href="https://www.instagram.com/あなたのID/"
+        ▼ @lavender._ をあなたのIDに変える
+      -->
+      <a href="#" class="btn-instagram reveal reveal-delay" target="_blank" rel="noopener noreferrer">
+        <!-- InstagramのSVGアイコン（画像ファイル不要・コードで描画） -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+        </svg>
+        @lavender._
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       お問い合わせ
+  ========================================== -->
+  <section class="contact" id="contact">
+    <div class="container">
+
+      <div class="section-label reveal">
+        <span class="en">Contact</span>
+        <span class="ja">お問い合わせ</span>
+      </div>
+
+      <!-- ▼ 説明文 -->
+      <p class="reveal">
+        ご質問・オーダーのご相談などはGoogleフォームよりお気軽にどうぞ。<br>
+       （例、google form等のアンケートについての説明を入れることができます。下記のボタンからgoogle gormに移行するように設定ができます。）
+      </p>
+
+      <!--
+        ▼ href="..." をあなたのGoogleフォームのURLに変える
+          例: href="https://forms.gle/xxxxxxxxxxxxxx"
+      -->
+      <a href="#" class="btn-contact reveal reveal-delay" target="_blank" rel="noopener noreferrer">
+        <!-- 封筒アイコン（SVG） -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <polyline points="2,4 12,13 22,4"/>
+        </svg>
+        お問い合わせフォームへ
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================
+       フッター
+  ========================================== -->
+  <footer class="footer">
+    <!-- ▼ 著作権表示：名前と年を変える -->
+    <p>© 2026 lavender._</p>
+  </footer>
+
+
+  <!-- JavaScriptファイルを読み込む -->
+  <script src="script.js"></script>
+
+</body>
+</html>

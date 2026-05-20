@@ -1,0 +1,705 @@
+/* =====================================================
+   style.css — Atelier Fil ポートフォリオサイト
+
+   【このファイルでできること】
+   サイト全体の「見た目」を管理している。
+   色・フォント・余白・レイアウト・アニメーションなど。
+
+   【構成】
+   1. CSS変数（色・フォントの一括管理）
+   2. リセット・基本設定
+   3. 共通レイアウト
+   4. ナビゲーション
+   5. ヒーロー（トップビュー）
+   6. ブランド紹介
+   7. ギャラリー
+   8. プロフィール
+   9. Instagram
+   10. お問い合わせ
+   11. フッター
+   12. アニメーション
+   13. レスポンシブ対応（スマホ）
+===================================================== */
+
+
+/* =====================================================
+   1. CSS変数（カラーパレット・フォント設定）
+===================================================== */
+:root {
+  --white:        #fafaf8;          /* ほぼ白・温かみのあるオフホワイト */
+  --gray-light:   #f0eeed;          /* 淡いグレー：セクション背景など */
+  --gray-mid:     #e2dedd;          /* 少し濃いグレー：ボーダーなどに */
+  --gray-text:    #7a7370;          /* 本文グレー：読みやすい落ち着いた色 */
+  --gray-dark:    #4a4442;          /* 見出しなど：やや濃いグレー */
+  --purple-pale:  #ece8f0;          /* くすみパープル（薄）：アクセント背景 */
+  --purple-soft:  #d4ccdf;          /* くすみパープル（中）：ライン・アクセント */
+  --purple-muted: #9d92b0;          /* くすみパープル（濃）：ボタン・強調 */
+  --lavender:     #f3f0f7;          /* ラベンダーほぼ白：セクション切り替えに */
+  --rose-pale:    #f2edec;          /* 淡ローズグレー：差し色として */
+
+  --font-en:  'Cormorant Garamond', serif;     /* 英字：優雅なセリフ体 */
+  --font-ja:  'Zen Kaku Gothic New', sans-serif; /* 日本語：細めゴシック */
+
+  --transition: 0.4s ease;          /* アニメーションの速さの基準 */
+  --radius: 2px;                    /* 角丸の基準（ほぼ直角で上品に） */
+}
+
+
+/* =====================================================
+   2. リセットCSS・基本設定
+   ブラウザごとのデフォルトスタイルをそろえる
+===================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* paddingやborderを幅に含める */
+}
+
+html {
+  scroll-behavior: smooth; /* ページ内リンクをなめらかにスクロール */
+}
+
+body {
+  background-color: var(--white);
+  color: var(--gray-dark);
+  font-family: var(--font-ja);
+  font-weight: 300;
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased; /* フォントのアンチエイリアス */
+}
+
+/* リンクの基本スタイル */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 画像が親要素からはみ出さないようにする */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* =====================================================
+   3. 共通レイアウト：section・コンテナ
+===================================================== */
+
+/* 各セクションの上下余白 */
+section {
+  padding: 90px 0;
+}
+
+/* 中央寄せのコンテナ（最大幅1100px） */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* セクションタイトルのスタイル（英語・日本語の2行構成） */
+.section-label {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section-label .en {
+  display: block;
+  font-family: var(--font-en);
+  font-size: clamp(2rem, 5vw, 3rem); /* 画面幅に応じてサイズ変化 */
+  font-weight: 300;
+  font-style: italic;
+  color: var(--purple-muted);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.section-label .ja {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-text);
+  text-transform: uppercase;
+}
+/* タイトルの下の細いライン */
+.section-label::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: var(--purple-soft);
+  margin: 16px auto 0;
+}
+
+
+/* =====================================================
+   4. ナビゲーションバー
+===================================================== */
+.nav {
+  position: fixed;        /* 画面上部に固定表示 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;           /* 他の要素より前面に */
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(250, 250, 248, 0.85); /* 半透明の白 */
+  backdrop-filter: blur(12px);           /* 背景をぼかすガラス効果 */
+  border-bottom: 1px solid var(--gray-mid);
+  transition: var(--transition);
+}
+
+/* ブランドロゴ部分 */
+.nav-logo {
+  font-family: var(--font-en);
+  font-size: 1.3rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.15em;
+  color: var(--gray-dark);
+}
+
+/* ナビのリンク群 */
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--gray-text);
+  transition: color var(--transition);
+}
+.nav-links a:hover {
+  color: var(--purple-muted);
+}
+
+/* スマホ用ハンバーガーメニューボタン（初期は非表示） */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--gray-dark);
+  transition: var(--transition);
+}
+
+
+/* =====================================================
+   5. ヒーロー（トップビュー）
+===================================================== */
+.hero {
+  min-height: 100svh;     /* 画面の高さいっぱいに表示 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  /* 淡い色を複数重ねたグラデーション背景 */
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, var(--purple-pale) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 70%, var(--rose-pale) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 60% at 50% 50%, var(--lavender) 0%, transparent 80%),
+    var(--white);
+}
+
+/* ノイズ質感オーバーレイ（写真の粒子感を再現） */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; /* クリックを透過させる */
+  opacity: 0.4;
+}
+
+/* ヒーローのテキスト中央部分 */
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  /* フェードイン＋上スライドのアニメーション */
+  animation: fadeUp 1.2s ease both;
+}
+
+.hero-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.4em;
+  color: var(--purple-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* メインタイトル */
+.hero-title {
+  font-family: var(--font-en);
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.05;
+  letter-spacing: 0.08em;
+  color: var(--gray-dark);
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-text);
+  margin-bottom: 48px;
+}
+
+/* スクロールダウンの矢印アニメーション */
+.hero-scroll {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-text);
+  animation: bounce 2s ease-in-out infinite;
+}
+.hero-scroll::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--purple-soft), transparent);
+}
+
+
+/* =====================================================
+   6. ブランド紹介セクション
+===================================================== */
+.brand {
+  background-color: var(--lavender);
+}
+
+/* 左テキスト・右装飾の2カラム */
+.brand-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.brand-text h2 {
+  font-family: var(--font-en);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--purple-muted);
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+.brand-text p {
+  font-size: 0.88rem;
+  color: var(--gray-text);
+  margin-bottom: 16px;
+}
+
+/* ブランド紹介の装飾ボックス群 */
+.brand-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+/* 各装飾カード */
+.brand-card {
+  border-radius: 4px;
+  padding: 32px 20px;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--gray-text);
+}
+/* カードの色を交互に変えて単調にならないように */
+.brand-card:nth-child(1) { background: var(--purple-pale); }
+.brand-card:nth-child(2) { background: var(--rose-pale); margin-top: 24px; }
+.brand-card:nth-child(3) { background: var(--rose-pale); }
+.brand-card:nth-child(4) { background: var(--purple-pale); margin-top: -24px; }
+.brand-card .icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+
+/* =====================================================
+   7. ギャラリーセクション
+===================================================== */
+.gallery {
+  background-color: var(--gray-light);
+}
+
+/* Masonryっぽい不規則グリッド（CSSのみ） */
+.gallery-grid {
+  display: grid;
+  /* repeat(auto-fill...)で画面幅に応じてカラム数が変わる */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ギャラリーの各アイテム */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+  /* ホバー時のトランジション */
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+/* 縦長カードを間に挟んでリズムを出す */
+.gallery-item.tall {
+  grid-row: span 2;
+}
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(157, 146, 176, 0.15);
+}
+
+/* カラープレースホルダー（実際の画像の代わり） */
+.gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+/* 各プレースホルダーに異なる淡い色を設定 */
+.gallery-placeholder.c1 { background: linear-gradient(135deg, #e8e4f0 0%, #d9d3e8 100%); }
+.gallery-placeholder.c2 { background: linear-gradient(135deg, #ede9e8 0%, #e0d8d6 100%); }
+.gallery-placeholder.c3 { background: linear-gradient(135deg, #eae8f2 0%, #d8d4eb 100%); }
+.gallery-placeholder.c4 { background: linear-gradient(135deg, #f0ece8 0%, #e4dcd8 100%); }
+.gallery-placeholder.c5 { background: linear-gradient(135deg, #e6e2ee 0%, #dcd6ea 100%); }
+.gallery-placeholder.c6 { background: linear-gradient(135deg, #ece8e6 0%, #e0d8d4 100%); }
+
+/* プレースホルダーのラベル */
+.gallery-placeholder .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--purple-muted);
+  text-transform: uppercase;
+}
+
+/* ホバー時に表示するオーバーレイ */
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(236, 232, 240, 0.6); /* くすみパープルの半透明 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+.gallery-overlay span {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-dark);
+}
+
+
+/* =====================================================
+   8. プロフィールセクション
+===================================================== */
+.profile {
+  background-color: var(--white);
+}
+
+.profile-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* プロフィール画像の円形フレーム */
+.profile-avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  /* 背景にくすみパープルのグラデーション */
+  background: linear-gradient(135deg, var(--purple-pale), var(--rose-pale));
+  border: 6px solid var(--gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-avatar .avatar-text {
+  font-family: var(--font-en);
+  font-size: 3rem;
+  color: var(--purple-muted);
+  font-style: italic;
+}
+
+.profile-name {
+  font-family: var(--font-en);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gray-dark);
+  margin-bottom: 4px;
+}
+.profile-role {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--purple-muted);
+  margin-bottom: 24px;
+}
+.profile-bio {
+  font-size: 0.88rem;
+  color: var(--gray-text);
+  margin-bottom: 12px;
+}
+
+/* スキルタグの一覧 */
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.profile-tag {
+  padding: 5px 14px;
+  background: var(--purple-pale);
+  border-radius: 100px;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  color: var(--purple-muted);
+}
+
+
+/* =====================================================
+   9. Instagramセクション
+===================================================== */
+.instagram {
+  background: linear-gradient(160deg, var(--purple-pale) 0%, var(--rose-pale) 100%);
+  text-align: center;
+  padding: 72px 0;
+}
+.instagram p {
+  font-size: 0.82rem;
+  color: var(--gray-text);
+  margin-bottom: 32px;
+  letter-spacing: 0.1em;
+}
+/* Instagramボタン */
+.btn-instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  background: var(--purple-muted);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
+  transition: background var(--transition), transform var(--transition);
+}
+.btn-instagram:hover {
+  background: var(--gray-dark);
+  transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   10. お問い合わせセクション
+===================================================== */
+.contact {
+  background-color: var(--gray-light);
+  text-align: center;
+}
+.contact p {
+  font-size: 0.88rem;
+  color: var(--gray-text);
+  max-width: 500px;
+  margin: 0 auto 40px;
+}
+/* お問い合わせボタン（アウトラインスタイル） */
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 40px;
+  border: 1px solid var(--purple-soft);
+  color: var(--purple-muted);
+  border-radius: 100px;
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
+  transition: all var(--transition);
+  background: transparent;
+  cursor: pointer;
+}
+.btn-contact:hover {
+  background: var(--purple-muted);
+  color: #fff;
+  border-color: var(--purple-muted);
+  transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   11. フッター
+===================================================== */
+.footer {
+  background: var(--gray-dark);
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 32px;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+.footer a {
+  color: rgba(255,255,255,0.6);
+  transition: color var(--transition);
+}
+.footer a:hover {
+  color: #fff;
+}
+
+
+/* =====================================================
+   12. アニメーション定義
+===================================================== */
+
+/* フェードイン＋上からのスライド */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* スクロールインジケーターの上下バウンス */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+
+/*
+  スクロールフェードインの仕組み:
+  1. .reveal クラスで最初は透明・少し下にずらした状態にしておく
+  2. script.js が画面内に入ったと検知したら .visible クラスを追加する
+  3. .visible がついたら不透明・元の位置に戻るアニメーションが始まる
+*/
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* 少し遅れて表示（グループ内でずらす） */
+.reveal-delay {
+  transition-delay: 0.15s;
+}
+.reveal-delay-2 {
+  transition-delay: 0.3s;
+}
+
+
+/* =====================================================
+   13. レスポンシブ対応（スマートフォン）
+   @media の中に書いたスタイルは
+   画面幅が768px以下のときだけ適用される
+===================================================== */
+@media (max-width: 768px) {
+
+  /* セクションの余白を小さく */
+  section {
+    padding: 64px 0;
+  }
+
+  /* コンテナの左右余白を小さく */
+  .container {
+    padding: 0 20px;
+  }
+
+  /* ナビのリンクを非表示にしてハンバーガーを表示 */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(250, 250, 248, 0.97);
+    border-bottom: 1px solid var(--gray-mid);
+    padding: 8px 0 20px;
+  }
+  /* メニューが開いているとき（.open クラスはscript.jsが付与） */
+  .nav-links.open {
+    display: flex;
+  }
+  .nav-links a {
+    padding: 14px 32px;
+    display: block;
+  }
+
+  /* ハンバーガーボタンを表示 */
+  .nav-toggle {
+    display: flex;
+  }
+
+  /* ブランド紹介を縦並びに */
+  .brand-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  /* ブランド装飾カードを2カラム維持のまま */
+  .brand-visual {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* スマホではカードのオフセットをなくす */
+  .brand-card:nth-child(2),
+  .brand-card:nth-child(4) {
+    margin-top: 0;
+  }
+
+  /* ギャラリーを1カラムに */
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  /* tallクラスの縦長も通常の高さに戻す */
+  .gallery-item.tall {
+    grid-row: span 1;
+  }
+
+  /* プロフィールを縦並びに・中央揃えに */
+  .profile-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    justify-items: center;
+    text-align: center;
+  }
+  .profile-tags {
+    justify-content: center;
+  }
+}
