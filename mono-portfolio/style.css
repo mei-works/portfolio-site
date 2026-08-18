@@ -1,0 +1,1036 @@
+/* =====================================================
+   style.css — モノトーン・ポートフォリオサイト
+
+   【デザインコンセプト】
+   美術館・ギャラリーのような静けさ。
+   白と黒とグレーだけで、余白とタイポグラフィが主役。
+   装飾を削ぎ落とし、作品そのものが際立つ空間。
+
+   【構成】
+   1. CSS変数（色・フォント・基準値）
+   2. リセット・基本設定
+   3. カーソル（カスタムカーソル）
+   4. ローディングアニメーション
+   5. ナビゲーション
+   6. ヒーロー（縦書きテキスト＋大きなナンバリング）
+   7. マーキー（横スクロールテキスト）
+   8. ギャラリー（左右非対称グリッド）
+   9. プロフィール（左固定・右スクロール型）
+   10. Instagram
+   11. お問い合わせ
+   12. フッター
+   13. アニメーション
+   14. レスポンシブ（スマホ対応）
+===================================================== */
+
+
+/* =====================================================
+   1. CSS変数
+===================================================== */
+:root {
+  /* モノトーンカラー */
+  --black:       #0a0a0a;   /* ほぼ黒 */
+  --gray-900:    #111111;   /* 背景など深いグレー */
+  --gray-700:    #2a2a2a;   /* カード背景など */
+  --gray-500:    #555555;   /* 補助テキスト */
+  --gray-300:    #999999;   /* 薄いテキスト・ライン */
+  --gray-100:    #e0e0e0;   /* 淡いグレー */
+  --gray-050:    #f5f5f5;   /* ほぼ白のグレー */
+  --white:       #ffffff;   /* 純白 */
+
+  /* アクセントカラー（白黒の中の唯一のアクセント） */
+  --accent:      #ffffff;   /* 白をアクセントとして使う */
+
+  /* フォント */
+  /* Bebas Neue: 大きな見出し用の圧縮された力強い書体 */
+  /* DM Sans: 本文用のモダンで読みやすい書体 */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* アニメーション速度 */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration: 0.6s;
+}
+
+
+/* =====================================================
+   2. リセット・基本設定
+===================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* スクロールバーの幅を考慮してレイアウトがずれないようにする */
+  scrollbar-gutter: stable;
+}
+
+/* スクロールバーをカスタマイズ（Webkit系ブラウザ） */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gray-500); }
+
+body {
+  background-color: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  /* カスタムカーソルを使うので標準カーソルを非表示にする */
+  cursor: none;
+  overflow-x: hidden; /* 横スクロールを無効化 */
+}
+
+/* スマホではカスタムカーソル不要なので標準に戻す */
+@media (hover: none) {
+  body { cursor: auto; }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* =====================================================
+   3. カスタムカーソル
+   マウスに追従する小さな円を表示する
+===================================================== */
+.cursor {
+  /* 固定位置で表示（スクロールに関係なく画面上に固定） */
+  position: fixed;
+  /* 全要素の最前面に */
+  z-index: 9999;
+  pointer-events: none; /* カーソル自体はクリックを透過 */
+  /* 中心を基準にするための調整 */
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+
+/* 小さい方の点（メインカーソル） */
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--white);
+  border-radius: 50%;
+}
+
+/* 大きい方の輪（少し遅れて追従） */
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  /* 少し遅れて動くようにする */
+  transition: transform 0.15s var(--ease), width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+/* リンクやボタンにホバーしたときに輪を大きくする */
+.cursor-ring.is-hovering {
+  width: 56px;
+  height: 56px;
+  border-color: var(--white);
+}
+
+
+/* =====================================================
+   4. ローディングアニメーション
+   ページ読み込み時に表示するオープニング演出
+===================================================== */
+.loading {
+  position: fixed;
+  inset: 0; /* top/right/bottom/left: 0 の省略形 */
+  z-index: 1000;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* フェードアウトするアニメーション（JSで .hidden クラスを付与） */
+  transition: opacity 0.8s var(--ease), visibility 0.8s;
+}
+
+.loading.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ローディング中に表示するカウンター */
+.loading-count {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15vw, 10rem);
+  color: var(--white);
+  letter-spacing: 0.1em;
+  /* 文字がカウントアップするときのアニメーション */
+  transition: opacity 0.2s;
+}
+
+
+/* =====================================================
+   5. ナビゲーション
+===================================================== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 28px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* 背景は透明のまま。スクロールしても溶け込む */
+  mix-blend-mode: difference; /* 背景色と反転するブレンドモード */
+}
+
+/* ブランドロゴ */
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  color: var(--white);
+}
+
+/* ナビリンク */
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-300);
+  transition: color var(--duration) var(--ease);
+  position: relative;
+}
+
+/* リンクの下線アニメーション */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--white);
+  transition: width var(--duration) var(--ease);
+}
+
+.nav-links a:hover {
+  color: var(--white);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* スマホ用ハンバーガー（初期は非表示） */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: none;
+  background: none;
+  border: none;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--white);
+  transition: var(--duration) var(--ease);
+}
+
+
+/* =====================================================
+   6. ヒーロー
+   大きなタイポグラフィ主体のトップビュー
+   左にナンバリング、右に大きなタイトル
+===================================================== */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  /* 左の細い列（番号）と右の広い列（テキスト）に分ける */
+  grid-template-columns: 80px 1fr;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px; /* ナビ分の余白 */
+}
+
+/* 左サイドバー（縦のライン＋番号） */
+.hero-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0;
+  border-right: 1px solid var(--gray-700);
+  position: relative;
+}
+
+/* 縦書きの小さいテキスト */
+.hero-sidebar-text {
+  font-size: 0.58rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  /* CSS で縦書きにする */
+  writing-mode: vertical-lr;
+  margin-top: auto;
+}
+
+/* 右メインエリア */
+.hero-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 48px 80px 60px;
+  position: relative;
+}
+
+/* 右上の小さいラベル */
+.hero-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+  /* フェードインアニメーション（1番目に表示） */
+  animation: fadeInUp 1s var(--ease) 0.5s both;
+}
+
+/* メインタイトル（大きなディスプレイ体） */
+.hero-title {
+  font-family: var(--font-display);
+  /* clamp(最小, 推奨, 最大) で画面幅に応じてサイズが変わる */
+  font-size: clamp(5rem, 15vw, 14rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 40px;
+  /* フェードインアニメーション（2番目に表示） */
+  animation: fadeInUp 1s var(--ease) 0.7s both;
+}
+
+/* タイトルの2行目を右にずらして非対称にする */
+.hero-title span {
+  display: block;
+  /* 2行目だけ右寄せ */
+  text-align: right;
+  color: transparent;
+  /* テキストに輪郭線だけをつける（抜き文字） */
+  -webkit-text-stroke: 1px var(--gray-500);
+}
+
+/* ヒーロー下部の情報エリア */
+.hero-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  /* フェードインアニメーション（3番目に表示） */
+  animation: fadeInUp 1s var(--ease) 0.9s both;
+}
+
+.hero-desc {
+  max-width: 300px;
+  font-size: 0.8rem;
+  color: var(--gray-300);
+  line-height: 1.8;
+}
+
+/* スクロールダウン */
+.hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--gray-500), transparent);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   7. マーキー（横スクロールテキスト）
+   セクション間のアクセントとして流れるテキスト
+===================================================== */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--gray-700);
+  border-bottom: 1px solid var(--gray-700);
+  padding: 20px 0;
+  background: var(--gray-900);
+}
+
+.marquee-inner {
+  display: flex;
+  gap: 80px;
+  /* 左に流れ続けるアニメーション */
+  animation: marqueeScroll 20s linear infinite;
+  /* はみ出した部分を見えないようにする親に overflow:hidden が必要 */
+  white-space: nowrap;
+}
+
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  flex-shrink: 0;
+}
+
+/* 各アイテム間の区切り記号 */
+.marquee-item::after {
+  content: '×';
+  color: var(--gray-700);
+}
+
+
+/* =====================================================
+   8. ギャラリー
+   左右非対称の大小混合グリッド
+===================================================== */
+.gallery {
+  padding: 120px 0;
+}
+
+.gallery-header {
+  padding: 0 48px;
+  margin-bottom: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/* セクション番号（01, 02...） */
+.section-number {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-700);
+}
+
+/* セクションタイトル */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.gallery-header-right {
+  text-align: right;
+}
+
+.gallery-count {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--gray-500);
+}
+
+/* ギャラリーグリッド（左右非対称な独自レイアウト） */
+.gallery-grid {
+  display: grid;
+  /* 3カラムで左右非対称にする */
+  grid-template-columns: 1fr 1.4fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 3px; /* 細いギャップでモダンな印象 */
+}
+
+/* 各ギャラリーアイテム */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  /* ホバーアニメーションのベース */
+  transition: transform var(--duration) var(--ease);
+}
+
+/* 中央の大きいアイテムを2行にまたがらせる */
+.gallery-item.featured {
+  grid-row: span 2;
+}
+
+/* 右端のアイテムを2列にまたがらせる */
+.gallery-item.wide {
+  grid-column: span 2;
+}
+
+/* カラープレースホルダー（画像の代わり） */
+.gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  position: relative;
+  /* ホバー時のスケールをここに適用 */
+  transition: transform 0.8s var(--ease);
+}
+
+/* 各アイテムの背景グレー（単調にならないよう微妙に差をつける） */
+.gallery-placeholder.g1 { background: #1a1a1a; }
+.gallery-placeholder.g2 { background: #242424; }
+.gallery-placeholder.g3 { background: #161616; }
+.gallery-placeholder.g4 { background: #1e1e1e; }
+.gallery-placeholder.g5 { background: #202020; }
+
+/* ホバー時に画像をわずかに拡大 */
+.gallery-item:hover .gallery-placeholder {
+  transform: scale(1.03);
+}
+
+/* グリッド線のアクセント（各アイテムの角に小さい白い十字） */
+.gallery-item::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  border-left: 1px solid rgba(255,255,255,0.2);
+  z-index: 1;
+  transition: opacity var(--duration);
+}
+
+.gallery-item:hover::before {
+  opacity: 0;
+}
+
+/* 作品番号ラベル */
+.gallery-label {
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-label-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-500);
+  margin-bottom: 4px;
+}
+
+.gallery-label-name {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--gray-300);
+  text-transform: uppercase;
+}
+
+/* ホバー時のオーバーレイ */
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease);
+  z-index: 2;
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+/* オーバーレイの「+」アイコン */
+.gallery-overlay-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--white);
+  transform: scale(0.8);
+  transition: transform var(--duration) var(--ease);
+}
+
+.gallery-item:hover .gallery-overlay-icon {
+  transform: scale(1);
+}
+
+
+/* =====================================================
+   9. プロフィール
+   左側固定テキスト + 右側コンテンツの2カラム
+===================================================== */
+.profile {
+  padding: 120px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  border-top: 1px solid var(--gray-700);
+}
+
+/* 左カラム（固定ヘッダー） */
+.profile-left {
+  /* スクロールしても左カラムが画面に残る */
+  position: sticky;
+  top: 120px;
+}
+
+.profile-index {
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray-700);
+  margin-bottom: 40px;
+}
+
+/* 名前：大きなタイポグラフィで存在感を出す */
+.profile-name {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+/* 名前の2行目（抜き文字スタイル） */
+.profile-name span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gray-700);
+}
+
+.profile-role {
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  margin-top: 20px;
+}
+
+/* 右カラム（詳細コンテンツ） */
+.profile-right {
+  padding-top: 80px;
+}
+
+.profile-bio {
+  font-size: 0.9rem;
+  color: var(--gray-300);
+  line-height: 2;
+  margin-bottom: 20px;
+}
+
+/* プロフィール詳細のリスト */
+.profile-details {
+  margin-top: 48px;
+  border-top: 1px solid var(--gray-700);
+}
+
+.profile-detail-row {
+  display: flex;
+  gap: 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gray-700);
+  font-size: 0.78rem;
+}
+
+.profile-detail-label {
+  width: 120px;
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-700);
+}
+
+.profile-detail-value {
+  color: var(--gray-300);
+  letter-spacing: 0.05em;
+}
+
+/* スキルタグ */
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.profile-tag {
+  padding: 6px 16px;
+  border: 1px solid var(--gray-700);
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  transition: all var(--duration) var(--ease);
+}
+
+.profile-tag:hover {
+  border-color: var(--white);
+  color: var(--white);
+}
+
+
+/* =====================================================
+   10. Instagram セクション
+===================================================== */
+.instagram {
+  padding: 120px 48px;
+  border-top: 1px solid var(--gray-700);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.instagram-left .section-number {
+  margin-bottom: 24px;
+}
+
+/* 大きなアットマーク（ビジュアルアクセント） */
+.instagram-at {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vw, 12rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gray-700);
+  letter-spacing: -0.05em;
+}
+
+.instagram-right p {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  line-height: 2;
+  margin-bottom: 40px;
+  max-width: 360px;
+}
+
+/* Instagram ボタン（アウトライン＋ホバーで塗りつぶし） */
+.btn-instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 32px;
+  border: 1px solid var(--gray-500);
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-300);
+  transition: all var(--duration) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ボタンの塗りつぶしエフェクト（左から右にスライド） */
+.btn-instagram::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  transform: translateX(-100%);
+  transition: transform var(--duration) var(--ease);
+  z-index: -1;
+}
+
+.btn-instagram:hover {
+  color: var(--black);
+  border-color: var(--white);
+}
+
+.btn-instagram:hover::before {
+  transform: translateX(0);
+}
+
+
+/* =====================================================
+   11. お問い合わせ
+===================================================== */
+.contact {
+  padding: 120px 48px;
+  border-top: 1px solid var(--gray-700);
+  text-align: center;
+  /* グリッドで垂直中央 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* 大きなお問い合わせテキスト */
+.contact-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 8rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--white);
+}
+
+/* 2行目を透かし文字にする */
+.contact-title span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gray-700);
+}
+
+.contact-desc {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  letter-spacing: 0.1em;
+  max-width: 400px;
+  line-height: 2;
+}
+
+/* お問い合わせボタン */
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 48px;
+  background: var(--white);
+  color: var(--black);
+  font-size: 0.72rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  transition: all var(--duration) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gray-100);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--duration) var(--ease);
+}
+
+.btn-contact:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.btn-contact span {
+  position: relative; /* ::before より前面に出す */
+}
+
+
+/* =====================================================
+   12. フッター
+===================================================== */
+.footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--gray-700);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  color: var(--gray-700);
+}
+
+.footer-copy {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--gray-700);
+}
+
+
+/* =====================================================
+   13. アニメーション定義
+===================================================== */
+
+/* フェードイン＋下から上へのスライド */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* マーキーの横スクロール */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); } /* 複製した半分分だけ移動 */
+}
+
+/* スクロールラインの上下アニメーション */
+@keyframes scrollLine {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/*
+  スクロールフェードインの仕組み:
+  1. .reveal クラスで最初は透明・少し下にずらす
+  2. script.js が画面内に入ったと検知したら .visible を付与
+  3. .visible でアニメーション開始
+*/
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 遅延バリエーション */
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+
+/* =====================================================
+   14. レスポンシブ対応（スマートフォン）
+===================================================== */
+@media (max-width: 768px) {
+
+  /* ナビのリンクを非表示・ハンバーガーを表示 */
+  .nav {
+    padding: 24px;
+  }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    z-index: 99;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+  }
+
+  .nav-toggle {
+    display: flex;
+    position: relative;
+    z-index: 100;
+  }
+
+  /* ヒーローをシングルカラムに */
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-sidebar {
+    display: none; /* スマホでは縦のサイドバーを非表示 */
+  }
+
+  .hero-main {
+    padding: 100px 24px 60px;
+  }
+
+  .hero-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  /* ギャラリーを縦1カラムに */
+  .gallery {
+    padding: 80px 0;
+  }
+
+  .gallery-header {
+    padding: 0 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-item.featured,
+  .gallery-item.wide {
+    grid-row: span 1;
+    grid-column: span 1;
+  }
+
+  /* プロフィールを縦並びに */
+  .profile {
+    grid-template-columns: 1fr;
+    padding: 80px 24px;
+    gap: 48px;
+  }
+
+  .profile-left {
+    position: static; /* スマホではstickyを解除 */
+  }
+
+  .profile-right {
+    padding-top: 0;
+  }
+
+  /* Instagramを縦並びに */
+  .instagram {
+    grid-template-columns: 1fr;
+    padding: 80px 24px;
+    gap: 40px;
+  }
+
+  .contact {
+    padding: 80px 24px;
+  }
+
+  .footer {
+    padding: 24px;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
